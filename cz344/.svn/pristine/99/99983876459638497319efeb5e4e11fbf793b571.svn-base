@@ -1,0 +1,72 @@
+function [bestC,bestP,bestval,allvalerrs]=crossvalidate(xTr,yTr,ktype,Cs,paras, paras2)
+% function [bestC,bestP,bestval,allvalerrs]=crossvalidate(xTr,yTr,ktype,Cs,paras)
+%
+% INPUT:	
+% xTr : dxn input vectors
+% yTr : 1xn input labels
+% ktype : (linear, rbf, polynomial)
+% Cs   : interval of regularization constant that should be tried out
+% paras: interval of kernel parameters that should be tried out
+% 
+% Output:
+% bestC: best performing constant C
+% bestP: best performing kernel parameter
+% bestval: best performing validation error
+% allvalerrs: a matrix where allvalerrs(i,j) is the validation error with parameters Cs(i) and paras(j)
+%
+% Trains an SVM classifier for all possible parameter settings in Cs and paras and identifies the best setting on a
+% validation split. 
+%
+if nargin <6
+  paras2 = 1;
+end;
+[~, nC] = size(Cs);
+[~, nP] = size(paras);
+[~, nP2] = size(paras2);
+allvalerrs = zeros(nC, nP, nP2);
+%% Split off validation data set
+% YOUR CODE
+
+[~,n] = size(yTr);
+num = n / 5;
+idx=randperm(n);
+idx=idx(1:num);
+yVa1=yTr(:,idx);
+xVa1=xTr(:,idx);
+yTr1=yTr;
+xTr1=xTr;
+yTr1(:,idx)=[];
+xTr1(:,idx)=[];
+
+
+
+
+%% Evaluate all parameter settings
+% YOUR CODE
+bestC = 0;
+bestP = 0;
+bestval = 1;
+for i=1:nC
+  for j=1:nP
+    for k=1:nP2
+      svmclassify=trainsvm(xTr1,yTr1,Cs(i),'rbf', paras(j), paras2(k));
+      allvalerrs(i,j, k) += sum(sign(svmclassify(xVa1))~=yVa1(:))./length(yVa1);
+      if(allvalerrs(i,j, k) < bestval)
+        bestval = allvalerrs(i,j,k);
+        bestC = Cs(i);
+        bestP = paras(j);
+        bestP2 = paras2(k);
+      end;
+    end;
+  end;
+end;
+    
+
+%% Identify best setting
+% YOUR CODE
+%svmclassify=trainsvm(xTr1,yTr1,bestC,'rbf', bestP);
+%allvalerrs(i,j) += sum(sign(svmclassify(xVa1))~=yVa1(:))./length(yVa1);
+%svmclassify=trainsvm(xTr2,yTr2,bestC,'rbf', bestP);
+%allvalerrs(i,j) += sum(sign(svmclassify(xVa2))~=yVa2(:))./length(yVa2);
+%allvalerrs(i,j) /= 2;
+

@@ -1,0 +1,33 @@
+function [w]=grdescent(func,w0,stepsize,maxiter,tolerance)
+% function [w]=grdescent(func,w0,stepsize,maxiter,tolerance)
+%
+% INPUT:
+% func function to minimize
+% w0 = initial weight vector 
+% stepsize = initial gradient descent stepsize 
+% tolerance = if norm(gradient)<tolerance, it quits
+%
+% OUTPUTS:
+% 
+% w = final weight vector
+%
+
+if nargin<5,tolerance=1e-02;end;
+w=w0;
+[l,g]=func(w0);
+t=stepsize;
+for i=1:maxiter
+  w=w-t*g;
+  [l1,g]=func(w);
+  if norm(g)<tolerance
+  break;
+  end;
+  if l1>l
+    t=t/2;
+  else
+    t=1.01*t;
+  end;
+  l=l1;
+end;
+
+

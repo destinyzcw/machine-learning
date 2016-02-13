@@ -1,0 +1,20 @@
+function w=spamupdate(w,email,truth);
+%	function w=spamupdate(w,email,truth);
+%
+% Input:
+% w 	weight vector
+% email instance vector
+% truth label
+%
+% Output:
+%
+% updated weight vector
+
+% INSERT CODE HERE:
+weight=0.5;
+for i=1:100
+  if w'*email*truth>0
+  break;
+  end;
+  w=w+weight*truth*email;
+end;

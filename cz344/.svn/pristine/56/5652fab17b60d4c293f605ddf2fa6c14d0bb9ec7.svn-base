@@ -1,0 +1,29 @@
+function trainspamfilter(xTr,yTr)
+
+[d,n]=size(xTr);
+
+
+% Feel free to change this code any way you want
+%f=@(w) ridge(w,xTr,yTr,1.2);
+f=@(w) hinge(w,xTr,yTr,1.3);
+%f=@(w) log_cosh(w,xTr,yTr,1.5);
+w0=zeros(size(xTr,1),1); % initialize with all-zeros vector
+w=grdescent(f,w0,1e-04,1000,1e-06);
+
+%%%%%%%
+
+%%%%%%%
+save('w0','w');
+
+function [loss,gradient]=log_cosh(w,xTr,yTr,lambda)
+
+  [d,n]=size(xTr);
+  temp = exp(w'*xTr-yTr);
+  temp2= exp(-w'*xTr+yTr);
+  loss = sum(log(temp+temp2)/2)+lambda*w'*w;
+  gradient = xTr*((temp-temp2)./(temp+temp2))';
+  
+
+
+%end
+

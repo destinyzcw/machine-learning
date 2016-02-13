@@ -1,0 +1,36 @@
+function  gradient = backprop(W, as,zs, yTr,  der_trans_func)
+% function [gradient] = backprop(W, as, zs, yTr,  der_trans_func)
+%
+% INPUT:
+% W weights (cell array)
+% as output of forward pass (cell array)
+% zs output of forward pass (cell array)
+% yTr 1xn matrix (each entry is a label)
+% der_trans_func derivative of transition function to apply for inner layers
+%
+% OUTPUTS:
+% 
+% gradient = the gradient at w as a cell array of matrices
+%
+
+n=length(yTr);
+delta=der_trans_func(as{1}) .* (zs{1}-yTr);
+% compute gradient with back-prop
+gradient = cell(size(W));
+ for i=1:length(W)-1
+	% INSERT CODE HERE:
+	gradient{i} = delta * (zs{i+1})';
+  [d,~] = size(gradient{i});
+  if d > 1
+    gradient{i} = gradient{i}(1:d-1,:);
+  end;
+  a=[as{i+1};ones(1,n)];
+  delta = der_trans_func(a) .* ((W{i})' * delta);
+end; 
+  gradient(length(W)) = delta * (zs{length(W) + 1})';
+    [d,~] = size(gradient{length(W)});
+  if d > 1
+    gradient{length(W)} = gradient{length(W)}(1:d-1,:);
+  end;
+
+
